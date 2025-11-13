@@ -1,0 +1,63 @@
+<h1 mat-dialog-title class="dialog-title">
+  {{ data ? 'Editar Producto' : 'Agregar Producto' }}
+</h1>
+<mat-divider></mat-divider>
+
+<div mat-dialog-content>
+  <!-- Contenedor flex para formulario e imagen -->
+  <div class="dialog-content-wrapper">
+
+    <!-- Formulario a la izquierda -->
+    <form [formGroup]="form" class="product-form">
+
+      <!-- Nombre -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Nombre del Producto</mat-label>
+        <input matInput formControlName="name" required autocomplete="off" />
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
+          El nombre es obligatorio
+        </mat-error>
+        <mat-error *ngIf="form.get('name')?.hasError('minlength')">
+          Debe tener al menos 3 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Descripción -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+      </mat-form-field>
+
+      <!-- Imagen URL -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>URL de la Imagen</mat-label>
+        <input matInput formControlName="image" placeholder="https://ejemplo.com/imagen.jpg" />
+      </mat-form-field>
+
+      <!-- Categorías -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Categorías</mat-label>
+        <mat-select formControlName="categoryIds" multiple required>
+          <mat-option *ngFor="let cat of categories" [value]="cat.id">
+            {{ cat.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('categoryIds')?.hasError('required')">
+          Seleccioná al menos una categoría
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+
+    <!-- Previsualización de imagen a la derecha -->
+    <div class="image-preview" *ngIf="form.get('image')?.value">
+      <img [src]="form.get('image')?.value" alt="Vista previa" (error)="onImageError($event)" />
+    </div>
+
+  </div>
+</div>
+
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cancelar</button>
+  <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="save()">Guardar</button>
+</div>
